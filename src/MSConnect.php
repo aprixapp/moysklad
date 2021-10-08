@@ -50,6 +50,13 @@ class MSConnect
         return $this;
     }
 
+    public function getByHref($hrefMS)
+    {
+        $this->response = $this->httpClient->get($hrefMS);
+
+        return $this;
+    }
+
     public function postJson($arSendBody)
     {
         $this->httpClient->request(
