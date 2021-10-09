@@ -9,7 +9,9 @@ use GuzzleHttp\Client;
 class MSConnect
 {
     const MS_HOST = 'https://online.moysklad.ru';
-    const MAIN_PART_ENDPOINT = '/api/remap/1.2/entity/';
+    const MAIN_PART_ENDPOINT = '/api/remap/1.2/entity';
+    const METADATA_PART = 'metadata';
+    const METADATA_ATTRIBUTES = 'attributes';
 
     protected $httpClient;
     protected $response;
@@ -45,7 +47,7 @@ class MSConnect
 
     public function get()
     {
-        $this->response = $this->httpClient->get(self::MAIN_PART_ENDPOINT . $this->entity->getEntityCode());
+        $this->response = $this->httpClient->get(implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]));
 
         return $this;
     }
@@ -61,7 +63,7 @@ class MSConnect
     {
         $this->httpClient->request(
             'POST',
-            self::MAIN_PART_ENDPOINT . $this->entity->getEntityCode(),
+            implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]),
             [
                 'json' => $arSendBody
             ]
@@ -106,7 +108,7 @@ class MSConnect
             $arQuery[] = 'offset=' . $offset;
         }
 
-        $lineUrl = self::MAIN_PART_ENDPOINT . $this->entity->getEntityCode();
+        $lineUrl = implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]);
 
         $requestUrl = (!empty($arQuery) ? $lineUrl . '?' . implode('&', $arQuery) : $lineUrl);
 
@@ -115,54 +117,77 @@ class MSConnect
         return $this;
     }
 
+    public function getMetadataAttributes()
+    {
+        $arPathParts = [
+            self::MAIN_PART_ENDPOINT,
+            $this->entity->getEntityCode(),
+            self::METADATA_PART,
+            self::METADATA_ATTRIBUTES
+        ];
+
+        return $this->getByHref(implode('/', $arPathParts));
+    }
+
+    public function getMetadata()
+    {
+        $arPathParts = [
+            self::MAIN_PART_ENDPOINT,
+            $this->entity->getEntityCode(),
+            self::METADATA_PART
+        ];
+
+        return $this->getByHref(implode('/', $arPathParts));
+    }
+
     public function getJsonResponse()
     {
         return json_decode($this->response->getBody()->getContents(), true);
     }
 
-    public function getRows()
+    public function getResponseRows()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['rows'];
     }
 
-    public function getMeta()
+    public function getResponseMeta()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta'];
     }
 
-    public function getMetaLimit()
+    public function getResponseMetaLimit()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['limit'];
     }
 
-    public function getMetaSize()
+    public function getResponseMetaSize()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['size'];
     }
 
-    public function getMetaOffset()
+    public function getResponseMetaOffset()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['offset'];
     }
 
-    public function getMetaHref()
+    public function getResponseMetaHref()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['href'];
     }
 
-    public function getMetaNextHref()
+    public function getResponseMetaNextHref()
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 

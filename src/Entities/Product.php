@@ -6,5 +6,5 @@ use AprixApp\MoySklad\Interfaces\MSEntityable;
 
 class Product extends MSEntity implements MSEntityable
 {
-    const CODE_ENTITY="product";
+    const CODE_ENTITY = "product";
 }
