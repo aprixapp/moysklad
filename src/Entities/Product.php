@@ -2,9 +2,9 @@
 
 namespace AprixApp\MoySklad\Entities;
 
-use AprixApp\MoySklad\Interfaces\MSEntityable;
+use AprixApp\MoySklad\MSEntity;
 
-class Product extends MSEntity implements MSEntityable
+class Product extends MSEntity
 {
     const CODE_ENTITY = "product";
 }

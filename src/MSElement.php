@@ -1,0 +1,103 @@
+<?php
+
+namespace AprixApp\MoySklad;
+
+class MSElement
+{
+    protected $connect;
+    protected $arQuery;
+    protected $arBodyPost;
+
+    public function __construct(MSConnect $connect)
+    {
+        $this->connect = $connect;
+    }
+
+    public function setFilter($arFilter)
+    {
+        if (!empty($arFilter)) {
+            $arFilterQuery = [];
+            foreach ($arFilter as $code => $values) {
+                if (is_array($values)) {
+                    $arFilterQuery = array_map(function ($value) use ($code) {
+                        return $code . "=" . $value;
+                    }, $values);
+                } else {
+                    $arFilterQuery[] = $code . "=" . $values;
+                }
+            }
+            $this->arQuery[] = 'filter=' . implode(';', $arFilterQuery);
+        }
+
+        return $this;
+    }
+
+    public function setOrder($arOrders)
+    {
+        if (!empty($arOrders)) {
+            $arOrdersQuery = [];
+            foreach ($arOrders as $code => $order) {
+                $arOrdersQuery[] = $order ? $code . ',' . $order : $code;
+            }
+            $this->arQuery[] = 'order=' . implode(';', $arOrdersQuery);
+        }
+
+        return $this;
+    }
+
+    public function setLimit($limit)
+    {
+        if ($limit) {
+            $this->arQuery[] = 'limit=' . $limit;
+        }
+
+        return $this;
+    }
+
+    public function setOffset($offset)
+    {
+        if ($offset) {
+            $this->arQuery[] = 'offset=' . $offset;
+        }
+
+        return $this;
+    }
+
+    public function setFieldBody($name, $value)
+    {
+        $this->arBodyPost[$name] = $value;
+
+        return $this;
+    }
+
+    public function setBody($arBody, $isReplace = false)
+    {
+        if ($isReplace) {
+            $this->arBodyPost = $arBody;
+        } else {
+            $this->arBodyPost = array_merge($this->arBodyPost, $arBody);
+        }
+
+        return $this;
+    }
+
+    public function get()
+    {
+        $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
+        $queryLine = !empty($this->arQuery) ? implode('&', $this->arQuery) : '';
+        $requestUrl = $queryLine ? ($partHref . '?' . $queryLine) : $partHref;
+
+        return $this->connect->get($requestUrl);
+    }
+
+    public function modified()
+    {
+        if (!empty($this->arBodyPost)) {
+            $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
+
+            return $this->connect->post($partHref, $this->arBodyPost);
+        } else {
+            throw new \Exception('Тело запроса пустое');
+        }
+    }
+}

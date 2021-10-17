@@ -3,29 +3,22 @@
 namespace AprixApp\MoySklad;
 
 use AprixApp\MoySklad\Entities\MSEntity;
-use AprixApp\MoySklad\Interfaces\MSEntityable;
 use GuzzleHttp\Client;
 
 class MSConnect
 {
     const MS_HOST = 'https://online.moysklad.ru';
-    const MAIN_PART_ENDPOINT = '/api/remap/1.2/entity';
-    const METADATA_PART = 'metadata';
-    const METADATA_ATTRIBUTES = 'attributes';
+    const HREF_MAIN_PART = '/api/remap/1.2';
 
     protected $httpClient;
     protected $response;
-    /**
-     * @var MSEntity
-     */
-    private $entity;
 
     public function __construct(array $access)
     {
-        if ($access['TOKEN']) {
-            $valueHeader = "Bearer " . $access['TOKEN'];
-        } elseif (isset($access['LOGIN']) && isset($access['PASSWORD'])) {
-            $valueHeader = "Basic " . base64_encode($access['LOGIN'] . ':' . $access['PASSWORD']);
+        if ($access['token']) {
+            $valueHeader = "Bearer " . $access['token'];
+        } elseif (isset($access['login']) && isset($access['password'])) {
+            $valueHeader = "Basic " . base64_encode($access['login'] . ':' . $access['password']);
         } else {
             new \Exception('Не указан токен или доступы для подключения');
         }
@@ -38,106 +31,24 @@ class MSConnect
         ]);
     }
 
-    public function setEntity(MSEntityable $entity)
+    public function get($hrefPart)
     {
-        $this->entity = $entity;
+        $this->response = $this->httpClient->get(self::HREF_MAIN_PART . $hrefPart);
 
         return $this;
     }
 
-    public function get()
-    {
-        $this->response = $this->httpClient->get(implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]));
-
-        return $this;
-    }
-
-    public function getByHref($hrefMS)
-    {
-        $this->response = $this->httpClient->get($hrefMS);
-
-        return $this;
-    }
-
-    public function postJson($arSendBody)
+    public function post($hrefPart, $arSendBody)
     {
         $this->httpClient->request(
             'POST',
-            implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]),
+            self::HREF_MAIN_PART . $hrefPart,
             [
                 'json' => $arSendBody
             ]
         );
 
         return $this;
-    }
-
-
-    public function getEntities($arFilter = [], $arOrders = [], $limit = false, $offset = false)
-    {
-        $arQuery = [];
-
-        if (!empty($arFilter)) {
-            $arFilterQuery = [];
-            foreach ($arFilter as $code => $values) {
-                if (is_array($values)) {
-                    $arFilterQuery = array_map(function ($value) use ($code) {
-                        return $code . "=" . $value;
-                    }, $values);
-                } else {
-                    $arFilterQuery[] = $code . "=" . $values;
-                }
-            }
-
-            $arQuery[] = 'filter=' . implode(';', $arFilterQuery);
-        }
-
-        if (!empty($arOrders)) {
-            $arOrdersQuery = [];
-            foreach ($arOrders as $code => $order) {
-                $arOrdersQuery[] = $order ? $code . ',' . $order : $code;
-            }
-            $arQuery[] = 'order=' . implode(';', $arOrdersQuery);
-        }
-
-        if ($limit) {
-            $arQuery[] = 'limit=' . $limit;
-        }
-
-        if ($offset) {
-            $arQuery[] = 'offset=' . $offset;
-        }
-
-        $lineUrl = implode('/', [self::MAIN_PART_ENDPOINT, $this->entity->getEntityCode()]);
-
-        $requestUrl = (!empty($arQuery) ? $lineUrl . '?' . implode('&', $arQuery) : $lineUrl);
-
-        $this->response = $this->httpClient->get($requestUrl);
-
-        return $this;
-    }
-
-    public function getMetadataAttributes()
-    {
-        $arPathParts = [
-            self::MAIN_PART_ENDPOINT,
-            $this->entity->getEntityCode(),
-            self::METADATA_PART,
-            self::METADATA_ATTRIBUTES
-        ];
-
-        return $this->getByHref(implode('/', $arPathParts));
-    }
-
-    public function getMetadata()
-    {
-        $arPathParts = [
-            self::MAIN_PART_ENDPOINT,
-            $this->entity->getEntityCode(),
-            self::METADATA_PART
-        ];
-
-        return $this->getByHref(implode('/', $arPathParts));
     }
 
     public function getJsonResponse()
@@ -180,17 +91,22 @@ class MSConnect
         return $jsonResult['meta']['offset'];
     }
 
-    public function getResponseMetaHref()
+    public function getResponseMetaHref(): string
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['href'];
     }
 
-    public function getResponseMetaNextHref()
+    public function getResponseMetaNextHref(): string
     {
         $jsonResult = json_decode($this->response->getBody()->getContents(), true);
 
         return $jsonResult['meta']['nextHref'];
+    }
+
+    public function getHttpClient(): Client
+    {
+        return $this->httpClient;
     }
 }
