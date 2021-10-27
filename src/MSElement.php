@@ -26,7 +26,7 @@ class MSElement
                     $arFilterQuery[] = $code . "=" . $values;
                 }
             }
-            $this->arQuery[] = 'filter=' . implode(';', $arFilterQuery);
+            $this->arQuery['filter'] = (!empty($this->arQuery['filter']) ? array_merge($this->arQuery['filter'], $arFilterQuery) : $arFilterQuery);
         }
 
         return $this;
@@ -39,7 +39,7 @@ class MSElement
             foreach ($arOrders as $code => $order) {
                 $arOrdersQuery[] = $order ? $code . ',' . $order : $code;
             }
-            $this->arQuery[] = 'order=' . implode(';', $arOrdersQuery);
+            $this->arQuery['order'] = $arOrdersQuery;
         }
 
         return $this;
@@ -48,7 +48,7 @@ class MSElement
     public function setLimit($limit)
     {
         if ($limit) {
-            $this->arQuery[] = 'limit=' . $limit;
+            $this->arQuery['limit'] = $limit;
         }
 
         return $this;
@@ -57,7 +57,7 @@ class MSElement
     public function setOffset($offset)
     {
         if ($offset) {
-            $this->arQuery[] = 'offset=' . $offset;
+            $this->arQuery['offset'] = $offset;
         }
 
         return $this;
@@ -81,10 +81,28 @@ class MSElement
         return $this;
     }
 
+    public function constructQuery()
+    {
+        $arFinalQueryLine = [];
+        if (!empty($this->arQuery)) {
+            foreach ($this->arQuery as $keySection => $section) {
+                if (is_array($section)) {
+                    $arFinalQueryLine[] = $keySection . '=' . implode(';', $section);
+                } else {
+                    $arFinalQueryLine[] = $keySection . '=' . $section;
+                }
+            }
+
+            return implode('&', $arFinalQueryLine);
+        }
+
+        return '';
+    }
+
     public function get()
     {
         $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
-        $queryLine = !empty($this->arQuery) ? implode('&', $this->arQuery) : '';
+        $queryLine = $this->constructQuery();
         $requestUrl = $queryLine ? ($partHref . '?' . $queryLine) : $partHref;
 
         return $this->connect->get($requestUrl);
