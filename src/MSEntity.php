@@ -6,6 +6,15 @@ class MSEntity extends MSElement
 {
     const ELEMENT_PART_HREF = '/entity';
 
+    public function setFilterByAttribute($idAttribute, $value)
+    {
+        $this->setFilter([
+            "https://online.moysklad.ru/api/remap/1.2/entity/" . static::CODE_ENTITY . "/metadata/attributes/" . $idAttribute => $value
+        ]);
+
+        return $this;
+    }
+
     public function setOrganization($msID)
     {
         $this->arBodyPost["organization"] = [
