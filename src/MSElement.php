@@ -112,9 +112,10 @@ class MSElement
     public function constructMultiItemBody()
     {
         if (!empty($this->arItemsBody)) {
+            $this->arBodyPost = [];
             /** @var MSItemBody $itemBody */
             foreach ($this->arItemsBody as $itemBody) {
-                $this->arBodyPost[] =   $itemBody->getBodyItem();
+                $this->arBodyPost[] = $itemBody->getBodyItem();
             }
         }
 
