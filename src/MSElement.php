@@ -13,17 +13,18 @@ class MSElement
         $this->connect = $connect;
     }
 
-    public function setFilter($arFilter)
+    public function setFilter($arFilter, $logic = false)
     {
         if (!empty($arFilter)) {
             $arFilterQuery = [];
+            $lineLogic = $logic ? $logic : '=';
             foreach ($arFilter as $code => $values) {
                 if (is_array($values)) {
-                    $arFilterQuery = array_map(function ($value) use ($code) {
-                        return $code . "=" . $value;
+                    $arFilterQuery = array_map(function ($value) use ($code, $lineLogic) {
+                        return $code . $lineLogic . $value;
                     }, $values);
                 } else {
-                    $arFilterQuery[] = $code . "=" . $values;
+                    $arFilterQuery[] = $code . $lineLogic . $values;
                 }
             }
             $this->arQuery['filter'] = (!empty($this->arQuery['filter']) ? array_merge($this->arQuery['filter'], $arFilterQuery) : $arFilterQuery);
