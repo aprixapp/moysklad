@@ -7,6 +7,7 @@ class MSElement
     protected $connect;
     protected $arQuery;
     protected $arBodyPost;
+    protected $arItemsBody;
 
     public function __construct(MSConnect $connect)
     {
@@ -82,6 +83,14 @@ class MSElement
         return $this;
     }
 
+    public function createItemBody()
+    {
+        $itemBody = new MSItemBody();
+        $this->arItemsBody[] = $itemBody;
+
+        return $itemBody;
+    }
+
     public function constructQuery()
     {
         $arFinalQueryLine = [];
@@ -98,6 +107,18 @@ class MSElement
         }
 
         return '';
+    }
+
+    public function constructMultiItemBody()
+    {
+        if (!empty($this->arItemsBody)) {
+            /** @var MSItemBody $itemBody */
+            foreach ($this->arItemsBody as $itemBody) {
+                $this->arBodyPost[] =   $itemBody->getBodyItem();
+            }
+        }
+
+        return $this;
     }
 
     public function get()
