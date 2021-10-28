@@ -118,4 +118,9 @@ class MSElement
             throw new \Exception('Тело запроса пустое');
         }
     }
+
+    public function getBodyPost()
+    {
+        return $this->arBodyPost;
+    }
 }
