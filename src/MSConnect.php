@@ -15,7 +15,7 @@ class MSConnect
 
     public function __construct(array $access)
     {
-        if ($access['token']) {
+        if (isset($access['token'])) {
             $valueHeader = "Bearer " . $access['token'];
         } elseif (isset($access['login']) && isset($access['password'])) {
             $valueHeader = "Basic " . base64_encode($access['login'] . ':' . $access['password']);
