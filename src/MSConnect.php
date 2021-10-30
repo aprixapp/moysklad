@@ -12,7 +12,6 @@ class MSConnect
 
     protected $httpClient;
     protected $response;
-    protected $jsonResponse;
 
     public function __construct(array $access)
     {
@@ -54,11 +53,9 @@ class MSConnect
 
     public function getJsonResponse()
     {
-        if (!isset($this->jsonResponse) || !$this->jsonResponse) {
-            $this->jsonResponse = $this->response->getBody()->getContents();
-        }
+        $this->response->getBody()->rewind();
 
-        return json_decode($this->jsonResponse, true);
+        return json_decode($this->response->getBody()->getContents(), true);
     }
 
     public function getResponseRows()
