@@ -12,6 +12,7 @@ class MSConnect
 
     protected $httpClient;
     protected $response;
+    protected $jsonResponse;
 
     public function __construct(array $access)
     {
@@ -53,54 +54,58 @@ class MSConnect
 
     public function getJsonResponse()
     {
-        return json_decode($this->response->getBody()->getContents(), true);
+        if (!isset($this->jsonResponse) || !$this->jsonResponse) {
+            $this->jsonResponse = $this->response->getBody()->getContents();
+        }
+
+        return json_decode($this->jsonResponse, true);
     }
 
     public function getResponseRows()
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['rows'];
     }
 
     public function getResponseMeta()
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta'];
     }
 
     public function getResponseMetaLimit()
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta']['limit'];
     }
 
     public function getResponseMetaSize()
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta']['size'];
     }
 
     public function getResponseMetaOffset()
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta']['offset'];
     }
 
     public function getResponseMetaHref(): string
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta']['href'];
     }
 
     public function getResponseMetaNextHref(): string
     {
-        $jsonResult = json_decode($this->response->getBody()->getContents(), true);
+        $jsonResult = $this->getJsonResponse();
 
         return $jsonResult['meta']['nextHref'];
     }
