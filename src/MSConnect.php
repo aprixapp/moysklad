@@ -62,49 +62,49 @@ class MSConnect
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['rows'];
+        return isset($jsonResult['rows']) ? $jsonResult['rows'] : [];
     }
 
     public function getResponseMeta()
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta'];
+        return isset($jsonResult['meta']) ? $jsonResult['meta'] : [];
     }
 
     public function getResponseMetaLimit()
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta']['limit'];
+        return isset($jsonResult['meta']['limit']) ? $jsonResult['meta']['limit'] : false;
     }
 
     public function getResponseMetaSize()
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta']['size'];
+        return isset($jsonResult['meta']['size']) ? $jsonResult['meta']['size'] : false;
     }
 
     public function getResponseMetaOffset()
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta']['offset'];
+        return isset($jsonResult['meta']['offset']) ? $jsonResult['meta']['offset'] : false;
     }
 
     public function getResponseMetaHref(): string
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta']['href'];
+        return isset($jsonResult['meta']['href']) ? $jsonResult['meta']['href'] : false;
     }
 
     public function getResponseMetaNextHref(): string
     {
         $jsonResult = $this->getJsonResponse();
 
-        return $jsonResult['meta']['nextHref'];
+        return isset($jsonResult['meta']['nextHref']) ? $jsonResult['meta']['nextHref'] : false;
     }
 
     public function getHttpClient(): Client
