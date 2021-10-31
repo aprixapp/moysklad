@@ -6,6 +6,11 @@ class MSEntity extends MSElement
 {
     const ELEMENT_PART_HREF = '/entity';
 
+    public static function createHrefEntityByID($idMS)
+    {
+        return MSConnect::MS_HOST . MSConnect::HREF_MAIN_PART . '/entity/' . static::CODE_ENTITY . '/' . $idMS;
+    }
+
     public function setFilterByAttribute($idAttribute, $value, $logic = false)
     {
         $this->setFilter([
