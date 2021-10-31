@@ -15,6 +15,13 @@ class MSTools
         ];
     }
 
+    public static function extractIDFromHref($href)
+    {
+        $arHref = explode('/', $href);
+
+        return $arHref[count($arHref) - 1];
+    }
+
     public static function constructAttributeMetaArray($id, $entity)
     {
         return [
