@@ -8,13 +8,18 @@ class MSDate
 
     private $dateTimeMS;
 
-    public function __construct($dateLine)
+    public function __construct($dateLine = false)
     {
-        $this->dateTimeMS = \DateTime::createFromFormat(self::DATE_FORMAT_MS, $dateLine);
+        if ($dateLine) {
+            $this->dateTimeMS = \DateTime::createFromFormat(self::DATE_FORMAT_MS, $dateLine);
+        } else {
+            $this->dateTimeMS = new \DateTime();
+        }
+
     }
 
-    public function getFormat($format)
+    public function getFormat($format = false)
     {
-        return $this->dateTimeMS->format($format);
+        return $this->dateTimeMS->format($format ? $format : self::DATE_FORMAT_MS);
     }
 }

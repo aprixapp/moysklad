@@ -8,6 +8,7 @@ class MSElement
     protected $arQuery;
     protected $arBodyPost;
     protected $arItemsBody;
+    protected $partHref;
 
     public function __construct(MSConnect $connect)
     {
@@ -124,19 +125,22 @@ class MSElement
 
     public function get()
     {
-        $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
         $queryLine = $this->constructQuery();
-        $requestUrl = $queryLine ? ($partHref . '?' . $queryLine) : $partHref;
+        $requestUrl = $queryLine ? ($this->partHref . '?' . $queryLine) : $this->partHref;
 
         return $this->connect->get($requestUrl);
     }
 
-    public function modified()
+    public function modified($method = 'POST')
     {
         if (!empty($this->arBodyPost)) {
-            $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
+            if ($method == 'PUT') {
+                return $this->connect->put($this->partHref, $this->arBodyPost);
+            } elseif ($method == 'POST') {
+                return $this->connect->post($this->partHref, $this->arBodyPost);
+            }
 
-            return $this->connect->post($partHref, $this->arBodyPost);
+            throw new \Exception('Неизвестный метод');
         } else {
             throw new \Exception('Тело запроса пустое');
         }

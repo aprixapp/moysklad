@@ -6,6 +6,20 @@ class MSEntity extends MSElement
 {
     const ELEMENT_PART_HREF = '/entity';
 
+    public function __construct(MSConnect $connect)
+    {
+        parent::__construct($connect);
+
+        $this->partHref = self::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
+    }
+
+    public function setPersonalHref($idEntityMS)
+    {
+        $this->partHref = self::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY . '/' . $idEntityMS;
+
+        return $this;
+    }
+
     public static function createHrefEntityByID($idMS)
     {
         return MSConnect::MS_HOST . MSConnect::HREF_MAIN_PART . '/entity/' . static::CODE_ENTITY . '/' . $idMS;
@@ -46,6 +60,33 @@ class MSEntity extends MSElement
         $this->arBodyPost["owner"] = MSTools::constructEntityMetaArray($msID, 'employee');
 
         return $this;
+    }
+
+    public function setAttributeInBody($id, $value)
+    {
+        $isChange = false;
+        if (isset($this->arBodyPost['attributes'])) {
+            foreach ($this->arBodyPost['attributes'] as &$arAttribute) {
+                if ($arAttribute['id'] == $id) {
+                    $arAttribute['value'] = $value;
+                    $isChange = true;
+                }
+            }
+        }
+
+        if (!$isChange) {
+            $this->arBodyPost['attributes'][] = array_merge(MSTools::constructAttributeMetaArray($id, static::CODE_ENTITY), [
+                'id' => $id,
+                'value' => $value
+            ]);
+        }
+
+        return $this;
+    }
+
+    public function getListAllAttributes()
+    {
+        return $this->connect->get('/entity/' . static::CODE_ENTITY . '/metadata/attributes');
     }
 
     public function create()

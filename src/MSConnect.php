@@ -51,6 +51,19 @@ class MSConnect
         return $this;
     }
 
+    public function put($hrefPart, $arSendBody)
+    {
+        $this->httpClient->request(
+            'PUT',
+            self::HREF_MAIN_PART . $hrefPart,
+            [
+                'json' => $arSendBody
+            ]
+        );
+
+        return $this;
+    }
+
     public function getJsonResponse()
     {
         $this->response->getBody()->rewind();
