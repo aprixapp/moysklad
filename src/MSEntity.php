@@ -10,12 +10,12 @@ class MSEntity extends MSElement
     {
         parent::__construct($connect);
 
-        $this->partHref = self::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
+        $this->partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY;
     }
 
     public function setPersonalHref($idEntityMS)
     {
-        $this->partHref = self::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY . '/' . $idEntityMS;
+        $this->partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY . '/' . $idEntityMS;
 
         return $this;
     }
