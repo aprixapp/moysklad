@@ -40,7 +40,7 @@ class MSConnect
 
     public function post($hrefPart, $arSendBody)
     {
-        $this->httpClient->request(
+        $this->response = $this->httpClient->request(
             'POST',
             self::HREF_MAIN_PART . $hrefPart,
             [
@@ -53,7 +53,7 @@ class MSConnect
 
     public function put($hrefPart, $arSendBody)
     {
-        $this->httpClient->request(
+        $this->response = $this->httpClient->request(
             'PUT',
             self::HREF_MAIN_PART . $hrefPart,
             [
