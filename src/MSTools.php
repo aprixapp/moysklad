@@ -4,6 +4,8 @@ namespace AprixApp\MoySklad;
 
 class MSTools
 {
+    const ID_MS_TEMPLATE = '/^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/';
+
     public static function constructEntityMetaArray($id, $entity)
     {
         return [
@@ -31,5 +33,10 @@ class MSTools
                 "mediaType" => "application/json"
             ]
         ];
+    }
+
+    public static function isMSId($id)
+    {
+        return preg_match(self::ID_MS_TEMPLATE, $id);
     }
 }
