@@ -22,7 +22,7 @@ class MSElement
             $lineLogic = $logic ? $logic : '=';
             foreach ($arFilter as $code => $values) {
                 if (is_array($values)) {
-                    $arFilterQuery = array_map(function ($value) use ($code, $lineLogic) {
+                    $arFilterQuery[] = array_map(function ($value) use ($code, $lineLogic) {
                         return $code . $lineLogic . $value;
                     }, $values);
                 } else {
