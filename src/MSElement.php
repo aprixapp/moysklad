@@ -150,4 +150,9 @@ class MSElement
     {
         return $this->arBodyPost;
     }
+
+    public function getArQuery()
+    {
+        return $this->arQuery;
+    }
 }
