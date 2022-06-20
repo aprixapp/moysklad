@@ -5,11 +5,8 @@ namespace AprixApp\MoySklad;
 use AprixApp\MoySklad\Entities\MSEntity;
 use GuzzleHttp\Client;
 
-class MSConnect
+class MSConnect extends AbstractMSService
 {
-    const MS_HOST = 'https://online.moysklad.ru';
-    const HREF_MAIN_PART = '/api/remap/1.2';
-
     protected $httpClient;
     protected $response;
 

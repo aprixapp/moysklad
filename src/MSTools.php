@@ -2,10 +2,8 @@
 
 namespace AprixApp\MoySklad;
 
-class MSTools
+class MSTools extends AbstractMSService
 {
-    const ID_MS_TEMPLATE = '/^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/';
-
     public static function constructEntityMetaArray($id, $entity)
     {
         return [
@@ -38,5 +36,10 @@ class MSTools
     public static function isMSId($id)
     {
         return preg_match(self::ID_MS_TEMPLATE, $id);
+    }
+
+    public static function getWorkPartUri($fullUri)
+    {
+        return str_replace([self::MS_HOST, self::HREF_MAIN_PART], "", $fullUri);
     }
 }
