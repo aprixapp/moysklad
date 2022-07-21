@@ -66,6 +66,15 @@ class MSElement
         return $this;
     }
 
+    public function setExpand($entity)
+    {
+        if ($entity) {
+            $this->arQuery['expand'] = $entity;
+        }
+
+        return $this;
+    }
+
     public function setFieldBody($name, $value)
     {
         $this->arBodyPost[$name] = $value;
