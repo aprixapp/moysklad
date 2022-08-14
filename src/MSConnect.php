@@ -9,8 +9,10 @@ class MSConnect extends AbstractMSService
 {
     protected $httpClient;
     protected $response;
+    protected $requestParams;
+    protected $isSetStream;
 
-    public function __construct(array $access)
+    public function __construct(array $access, $requestOptions = [])
     {
         if (isset($access['token'])) {
             $valueHeader = "Bearer " . $access['token'];
@@ -20,12 +22,22 @@ class MSConnect extends AbstractMSService
             new \Exception('Не указан токен или доступы для подключения');
         }
 
-        $this->httpClient = new Client([
+        $this->requestParams = [
             'base_uri' => self::MS_HOST,
             'headers' => [
                 "Authorization" => $valueHeader
             ]
-        ]);
+        ];
+
+        if (!empty($requestOptions)) {
+            $this->requestParams = array_merge($this->requestParams, $requestOptions);
+        }
+
+        if (!empty($requestOptions) && isset($requestOptions['stream'])) {
+            $this->isSetStream = $requestOptions['stream'];
+        }
+
+        $this->httpClient = new Client($this->requestParams);
     }
 
     public function get($hrefPart)
@@ -63,7 +75,9 @@ class MSConnect extends AbstractMSService
 
     public function getJsonResponse()
     {
-        $this->response->getBody()->rewind();
+        if (!$this->isSetStream) {
+            $this->response->getBody()->rewind();
+        }
 
         return json_decode($this->response->getBody()->getContents(), true);
     }
@@ -120,5 +134,10 @@ class MSConnect extends AbstractMSService
     public function getHttpClient(): Client
     {
         return $this->httpClient;
+    }
+
+    public function getRequestParams(): array
+    {
+        return $this->requestParams;
     }
 }
