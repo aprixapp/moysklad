@@ -89,6 +89,11 @@ class MSEntity extends MSElement
         return $this->connect->get('/entity/' . static::CODE_ENTITY . '/metadata/attributes');
     }
 
+    public function groupDelete()
+    {
+        return $this->connect->post('/entity/' . static::CODE_ENTITY . '/delete', $this->arBodyPost);
+    }
+
     public function create()
     {
         $this->modified();
