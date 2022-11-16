@@ -57,6 +57,15 @@ class MSElement
         return $this;
     }
 
+    public function setSearch($searchLine)
+    {
+        if ($searchLine) {
+            $this->arQuery['search'] = $searchLine;
+        }
+
+        return $this;
+    }
+
     public function setOffset($offset)
     {
         if ($offset) {
