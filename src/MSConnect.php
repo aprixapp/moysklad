@@ -89,6 +89,13 @@ class MSConnect extends AbstractMSService
         return isset($jsonResult['rows']) ? $jsonResult['rows'] : [];
     }
 
+    public function getResponseField($keyField)
+    {
+        $jsonResult = $this->getJsonResponse();
+
+        return isset($jsonResult[$keyField]) ? $jsonResult[$keyField] : [];
+    }
+
     public function getResponseMeta()
     {
         $jsonResult = $this->getJsonResponse();
