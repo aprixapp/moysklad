@@ -2,7 +2,7 @@
 
 namespace AprixApp\MoySklad;
 
-class MSEntity extends MSElement
+abstract class MSEntity extends MSElement
 {
     const ELEMENT_PART_HREF = '/entity';
 

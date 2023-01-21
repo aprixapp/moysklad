@@ -2,7 +2,7 @@
 
 namespace AprixApp\MoySklad;
 
-class MSElement
+abstract class MSElement
 {
     protected $connect;
     protected $arQuery;
