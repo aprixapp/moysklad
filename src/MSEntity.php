@@ -28,7 +28,7 @@ abstract class MSEntity extends MSElement
     public function setFilterByAttribute($idAttribute, $value, $logic = false)
     {
         $this->setFilter([
-            "https://online.moysklad.ru/api/remap/1.2/entity/" . static::CODE_ENTITY . "/metadata/attributes/" . $idAttribute => $value
+            MSTools::getMSHost() . "/api/remap/1.2/entity/" . static::CODE_ENTITY . "/metadata/attributes/" . $idAttribute => $value
         ], $logic);
 
         return $this;

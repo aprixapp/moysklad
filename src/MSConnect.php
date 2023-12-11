@@ -25,7 +25,8 @@ class MSConnect extends AbstractMSService
         $this->requestParams = [
             'base_uri' => self::MS_HOST,
             'headers' => [
-                "Authorization" => $valueHeader
+                "Authorization" => $valueHeader,
+                'Accept-Encoding' => 'gzip'
             ]
         ];
 
@@ -42,7 +43,10 @@ class MSConnect extends AbstractMSService
 
     public function get($hrefPart)
     {
-        $this->response = $this->httpClient->get(self::HREF_MAIN_PART . $hrefPart);
+        $this->response = $this->httpClient->get(
+            self::HREF_MAIN_PART . $hrefPart, [
+            'decode_content' => 'gzip'
+        ]);
 
         return $this;
     }
@@ -53,7 +57,8 @@ class MSConnect extends AbstractMSService
             'POST',
             self::HREF_MAIN_PART . $hrefPart,
             [
-                'json' => $arSendBody
+                'json' => $arSendBody,
+                'decode_content' => 'gzip'
             ]
         );
 
@@ -66,7 +71,8 @@ class MSConnect extends AbstractMSService
             'PUT',
             self::HREF_MAIN_PART . $hrefPart,
             [
-                'json' => $arSendBody
+                'json' => $arSendBody,
+                'decode_content' => 'gzip'
             ]
         );
 

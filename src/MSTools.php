@@ -8,7 +8,7 @@ class MSTools extends AbstractMSService
     {
         return [
             'meta' => [
-                "href" => "https://online.moysklad.ru/api/remap/1.2/entity/" . $entity . '/' . $id,
+                "href" => self::MS_HOST . "/api/remap/1.2/entity/" . $entity . '/' . $id,
                 "type" => $entity,
                 "mediaType" => "application/json"
             ]
@@ -26,7 +26,7 @@ class MSTools extends AbstractMSService
     {
         return [
             'meta' => [
-                "href" => "https://online.moysklad.ru/api/remap/1.2/entity/" . $entity . '/metadata/attributes/' . $id,
+                "href" => self::MS_HOST . "/api/remap/1.2/entity/" . $entity . '/metadata/attributes/' . $id,
                 "type" => 'attributemetadata',
                 "mediaType" => "application/json"
             ]
@@ -41,5 +41,10 @@ class MSTools extends AbstractMSService
     public static function getWorkPartUri($fullUri)
     {
         return str_replace([self::MS_HOST, self::HREF_MAIN_PART], "", $fullUri);
+    }
+
+    public static function getMSHost()
+    {
+        return self::MS_HOST;
     }
 }
