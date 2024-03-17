@@ -2,7 +2,6 @@
 
 namespace AprixApp\MoySklad;
 
-use AprixApp\MoySklad\Entities\MSEntity;
 use GuzzleHttp\Client;
 
 class MSConnect extends AbstractMSService
@@ -19,7 +18,7 @@ class MSConnect extends AbstractMSService
         } elseif (isset($access['login']) && isset($access['password'])) {
             $valueHeader = "Basic " . base64_encode($access['login'] . ':' . $access['password']);
         } else {
-            new \Exception('Не указан токен или доступы для подключения');
+            throw new \Exception('Не указан токен или доступы для подключения');
         }
 
         $this->requestParams = [
@@ -41,8 +40,24 @@ class MSConnect extends AbstractMSService
         $this->httpClient = new Client($this->requestParams);
     }
 
+    function processPath($href)
+    {
+        $pattern = '/^' . preg_quote(self::MS_HOST . self::HREF_MAIN_PART, '/') . '/';
+
+        $arMatches = [];
+        if (preg_match($pattern, $href, $arMatches)) {
+
+            return preg_replace($pattern, '', $href);
+        } else {
+
+            return $href;
+        }
+    }
+
     public function get($hrefPart)
     {
+        $hrefPart = $this->processPath($hrefPart);
+
         $this->response = $this->httpClient->get(
             self::HREF_MAIN_PART . $hrefPart, [
             'decode_content' => 'gzip'
@@ -51,8 +66,26 @@ class MSConnect extends AbstractMSService
         return $this;
     }
 
+    public function download($hrefPart, $pathDownload)
+    {
+        $this->response = $this->httpClient->get(
+            $hrefPart, [
+            'decode_content' => 'gzip',
+            'sink' => $pathDownload
+        ]);
+
+        return $this;
+    }
+
+    public function getStatusCodeResponse()
+    {
+        return $this->response->getStatusCode();
+    }
+
     public function post($hrefPart, $arSendBody)
     {
+        $hrefPart = $this->processPath($hrefPart);
+
         $this->response = $this->httpClient->request(
             'POST',
             self::HREF_MAIN_PART . $hrefPart,
@@ -67,6 +100,8 @@ class MSConnect extends AbstractMSService
 
     public function put($hrefPart, $arSendBody)
     {
+        $hrefPart = $this->processPath($hrefPart);
+
         $this->response = $this->httpClient->request(
             'PUT',
             self::HREF_MAIN_PART . $hrefPart,
@@ -77,6 +112,30 @@ class MSConnect extends AbstractMSService
         );
 
         return $this;
+    }
+
+    public function getResponseHeaders()
+    {
+        return $this->response->getHeaders();
+    }
+
+    public function getResponseHeader($name)
+    {
+        return $this->response->getHeader($name);
+    }
+
+    public function getResponseLocation()
+    {
+        $arHeaderLocation = $this->getResponseHeader('Location');
+
+        return !empty($arHeaderLocation) ? $arHeaderLocation[array_key_first($arHeaderLocation)] : '';
+    }
+
+    public function getResponseContentLocation()
+    {
+        $arHeaderContentLocation = $this->getResponseHeader('Content-Location');
+
+        return !empty($arHeaderContentLocation) ? $arHeaderContentLocation[array_key_first($arHeaderContentLocation)] : '';
     }
 
     public function getJsonResponse()

@@ -4,7 +4,7 @@
   "description": "A library for interacting with the MoySklad API using JSON 1.2",
   "license": "MIT",
   "require": {
-    "php": ">=7.1.0",
+    "php": ">=7.4.0",
     "guzzlehttp/guzzle": "^7.0",
     "ext-json": "*"
   },
