@@ -9,10 +9,18 @@ abstract class MSElement
     protected $arBodyPost;
     protected $arItemsBody;
     protected $partHref;
+    protected string $fullRequestURI = '';
 
     public function __construct(MSConnect $connect)
     {
         $this->connect = $connect;
+    }
+
+    public function setFullPath($fullPath)
+    {
+        $this->fullRequestURI = $fullPath;
+
+        return $this;
     }
 
     public function setFilter($arFilter, $logic = false)
@@ -144,6 +152,10 @@ abstract class MSElement
     public function get()
     {
         $queryLine = $this->constructQuery();
+        if (!empty($this->fullRequestURI)) {
+            $this->partHref = MSTools::getPartHrefWithoutBaseEndpoint($this->fullRequestURI);
+        }
+
         $requestUrl = $queryLine ? ($this->partHref . '?' . $queryLine) : $this->partHref;
 
         return $this->connect->get($requestUrl);
@@ -151,6 +163,10 @@ abstract class MSElement
 
     public function modified($method = 'POST')
     {
+        if (!empty($this->fullRequestURI)) {
+            $this->partHref = MSTools::getPartHrefWithoutBaseEndpoint($this->fullRequestURI);
+        }
+
         if (!empty($this->arBodyPost)) {
             if ($method == 'PUT') {
                 return $this->connect->put($this->partHref, $this->arBodyPost);

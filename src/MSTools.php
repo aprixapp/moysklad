@@ -47,4 +47,11 @@ class MSTools extends AbstractMSService
     {
         return self::MS_HOST;
     }
+
+    public static function getPartHrefWithoutBaseEndpoint($fullPath)
+    {
+        $pattern = '/^' . addcslashes(MSConnect::MS_HOST . MSConnect::HREF_MAIN_PART, '/') . '/';
+
+        return preg_replace($pattern, '', $fullPath);
+    }
 }
