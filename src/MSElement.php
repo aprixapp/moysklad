@@ -8,8 +8,8 @@ abstract class MSElement
     protected $arQuery;
     protected $arBodyPost;
     protected $arItemsBody;
-    protected $partHref;
-    protected string $fullRequestURI = '';
+    protected string $partHref = "";
+    protected string $fullRequestURI = "";
 
     public function __construct(MSConnect $connect)
     {
@@ -188,5 +188,10 @@ abstract class MSElement
     public function getArQuery()
     {
         return $this->arQuery;
+    }
+
+    public function getPartHref(): string
+    {
+        return $this->partHref;
     }
 }

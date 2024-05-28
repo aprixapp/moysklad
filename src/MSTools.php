@@ -44,6 +44,17 @@ class MSTools extends AbstractMSService
         ];
     }
 
+    public static function constructCustomTemplateMetaArray($id, $entity): array
+    {
+        return [
+            'meta' => [
+                "href" => self::MS_HOST . "/api/remap/1.2/entity/" . $entity . '/metadata/customtemplate/' . $id,
+                "type" => 'customtemplate',
+                "mediaType" => "application/json"
+            ]
+        ];
+    }
+
     public static function isMSId($id)
     {
         return preg_match(self::ID_MS_TEMPLATE, $id);
