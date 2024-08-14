@@ -161,7 +161,7 @@ abstract class MSElement
         return $this->connect->get($requestUrl);
     }
 
-    public function modified($method = 'POST')
+    public function modified($method = 'POST'): MSConnect
     {
         if (!empty($this->fullRequestURI)) {
             $this->partHref = MSTools::getPartHrefWithoutBaseEndpoint($this->fullRequestURI);
@@ -178,6 +178,15 @@ abstract class MSElement
         } else {
             throw new \Exception('Тело запроса пустое');
         }
+    }
+
+    public function delete(): MSConnect
+    {
+        if (!empty($this->fullRequestURI)) {
+            $this->partHref = MSTools::getPartHrefWithoutBaseEndpoint($this->fullRequestURI);
+        }
+
+        return $this->connect->delete($this->partHref, $this->arBodyPost);
     }
 
     public function getBodyPost()

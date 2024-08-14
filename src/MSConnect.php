@@ -54,7 +54,7 @@ class MSConnect extends AbstractMSService
         }
     }
 
-    public function get($hrefPart)
+    public function get($hrefPart): self
     {
         $hrefPart = $this->processPath($hrefPart);
 
@@ -66,7 +66,7 @@ class MSConnect extends AbstractMSService
         return $this;
     }
 
-    public function download($hrefPart, $pathDownload)
+    public function download($hrefPart, $pathDownload): self
     {
         $this->response = $this->httpClient->get(
             $hrefPart, [
@@ -82,7 +82,7 @@ class MSConnect extends AbstractMSService
         return $this->response->getStatusCode();
     }
 
-    public function post($hrefPart, $arSendBody)
+    public function post($hrefPart, $arSendBody): self
     {
         $hrefPart = $this->processPath($hrefPart);
 
@@ -98,7 +98,7 @@ class MSConnect extends AbstractMSService
         return $this;
     }
 
-    public function put($hrefPart, $arSendBody)
+    public function put($hrefPart, $arSendBody): self
     {
         $hrefPart = $this->processPath($hrefPart);
 
@@ -109,6 +109,29 @@ class MSConnect extends AbstractMSService
                 'json' => $arSendBody,
                 'decode_content' => 'gzip'
             ]
+        );
+
+        return $this;
+    }
+
+    public function delete($hrefPart, $arDeleteBody = []): self
+    {
+        $hrefPart = $this->processPath($hrefPart);
+
+        if (!empty($arDeleteBody)) {
+            $arRequest = [
+                'json' => $arDeleteBody,
+                'decode_content' => 'gzip'
+            ];
+        } else {
+            $arRequest = [
+                'decode_content' => 'gzip'
+            ];
+        }
+
+        $this->response = $this->httpClient->request(
+            'DELETE',
+            self::HREF_MAIN_PART . $hrefPart, $arRequest
         );
 
         return $this;
