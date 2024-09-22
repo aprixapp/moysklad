@@ -6,6 +6,8 @@ abstract class MSReport extends MSElement
 {
     const ELEMENT_PART_HREF = '/report';
 
+    protected string $mode = "";
+
     public function __construct(MSConnect $connect)
     {
         parent::__construct($connect);
