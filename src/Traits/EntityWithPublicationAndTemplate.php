@@ -23,6 +23,13 @@ trait EntityWithPublicationAndTemplate
             ->getJsonResponse();
     }
 
+    public function getListEmbeddedTemplates(): MSConnect
+    {
+        $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY . '/metadata/embeddedtemplate';
+
+        return $this->connect->get($partHref);
+    }
+
     public function getListCustomTemplates(): MSConnect
     {
         $partHref = static::ELEMENT_PART_HREF . '/' . static::CODE_ENTITY . '/metadata/customtemplate';
